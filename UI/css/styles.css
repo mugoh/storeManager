@@ -28,9 +28,6 @@ a : active {
 	outline: 0;
 }
 
-a {
-	outline: 0;
-}
 
 .container {
 	padding: 0 20px 0 20px;
@@ -54,16 +51,16 @@ header#sign-in-header {
 }
 
 
-/* sign in header */
+/* sign in header, users headers */
 
-#sign-in-header .store-logo {
+#sign-in-header .store-logo, #header-admin .store-logo {
 	margin: 0 auto;
 	margin-left: 100px;
 	width: 90px;
 	height: 20px;
 }
 
-#sign-in-header .store-logo img{
+#sign-in-header .store-logo img, #header-admin .store-logo img {
 	margin: 0 auto;
 	width: 0 auto;
 	max-width: 100%;

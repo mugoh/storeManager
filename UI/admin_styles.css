@@ -1,0 +1,28 @@
+sign-in {
+	float: right;
+	top: 8px;
+	right: 16px;
+	position: absolute;
+}
+
+  #sign-in button {
+  	background-color: #fff;
+  	color: #2C34EC;
+  	border: 2px solid #30EC2C;
+  	border-radius: 12px;
+  	text-align: center;
+  	display: inline-block;
+  	padding: 10px 25px;
+  	font-size: 16px;
+  	margin: auto;
+  	cursor: pointer;
+  	transition-duration: 0.45s;
+  	-webkit-transition-duration: 0.45s;
+  }
+
+  #sign-in button:hover {
+  	background: #83C853;
+  	color: #fff;
+  	border: 4px solid #83C853;
+  	border-radius: 4px;
+  }
