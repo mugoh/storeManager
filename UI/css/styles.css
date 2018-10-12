@@ -27,6 +27,11 @@ h1,h2, h3, h4 {
 a : active {
 	outline: 0;
 }
+
+a {
+	outline: 0;
+}
+
 .container {
 	padding: 0 20px 0 20px;
 	max-width: 960px;
