@@ -43,6 +43,70 @@ header {
 	margin-bottom: 0;
 }
 
+
+header#sign-in-header {
+	padding: 0 10px;
+}
+
+
+/* sign in header */
+
+#sign-in-header .store-logo {
+	margin: 0 auto;
+	margin-left: 100px;
+	width: 90px;
+	height: 20px;
+}
+
+#sign-in-header .store-logo img{
+	margin: 0 auto;
+	width: 0 auto;
+	max-width: 100%;
+}
+
+
+.nav-sign-in .sign-up-for-new {
+	color: #001BB0;
+	font-weight: bolder;
+	padding: 8px;
+	transform: all 2s ease;
+	background-color: #fff;
+	border: 2px solid #23D60D;
+	border-radius: 10px;
+}
+
+.nav-sign-in .sign-up-for-new:hover {
+	background-color: #4B87DC;
+	color: #fff;
+}
+
+.nav-sign-in li {
+	float: left;
+
+}
+
+.nav-sign-in li a {
+	display: block;
+	padding: 8px;
+	padding-left: 0;
+	margin-right: 0;
+	margin-right: 0;
+
+}
+
+.nav-sign-in ul {
+	list-style-type: none;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+	float: right;
+	margin-right: 80px;
+}
+
+
+
+/* end of sign-ins */ 
+
 header .nav  {
 	font-family: "Open Sans", Arial;
 	margin-right: 0;

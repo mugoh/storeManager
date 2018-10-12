@@ -1,0 +1,104 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+body{
+	font-family: "Open Sans", Arial, sans-serif;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.6em;
+	color: #656565;
+	background: #F0F0F0;
+	
+}
+
+label {
+	display: block;
+	margin: 10px 0;
+}
+
+form {
+	margin: auto;
+	margin-top: 30px;
+
+}
+
+#container {
+	width: 430px;
+	height: 340px;
+	padding: 20px 0px;
+	padding-left: 80px;
+	padding-bottom: 20px;
+	position: absolute;
+	top: 30%;
+	left: 30%;
+	background-color: #fff;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.19), 0 6px 20px 0 rgba(0, 0, 0, 0.18);
+
+
+}
+
+input {
+	outline: none;
+}
+
+input#username,#pass {
+	padding-left: 10px;
+	margin: 10px;
+	margin-top: 12px;
+    margin-left: 0px;
+    width: 290px;
+    height: 40px;
+    background-color: #fff;
+    border: 1px solid #D4D7D9;
+    border-radius: 4px;
+    color: black;
+
+}
+
+input#username:hover,#pass:hover {
+	box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+}
+
+input#username:focus,#pass:focus {
+	box-shadow: 0 0 10px rgba(20, 150, 128, 1);
+}
+
+.check {
+	display: inline-block;
+}
+
+input.sign-button {
+	margin-top: 20px;
+	padding: 6px 13px;
+	background-color: #0D7F9A;
+	border-radius: 3px;
+}
+
+input.sign-button:hover {
+	background-color: #065C9D;
+	cursor: pointer;
+
+}
+
+.bottom-right {
+	float: right;
+	position: absolute;
+	right: 20px;
+	bottom: 20px;
+	color: #0D7F9A;
+	text-decoration: none;
+}
+
+.bottom-right:hover {
+	color: #065C9D;
+	text-decoration: underline;
+}
+
+@media only screen and (max-width: 500px) {
+  #container {
+  	height: 240px;
+  	width: 300px;
+  }
+  form {
+  	margin: auto;
+  }
+}
