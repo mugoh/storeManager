@@ -10,6 +10,7 @@ body{
 	
 }
 
+
 label {
 	display: block;
 	margin: 10px 0;
@@ -27,8 +28,9 @@ form {
 	padding: 20px 0px;
 	padding-left: 80px;
 	padding-bottom: 20px;
-	position: absolute;
-	top: 30%;
+	position: relative;
+	margin-bottom: 30px;
+	margin-top: 50px;
 	left: 30%;
 	background-color: #fff;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.19), 0 6px 20px 0 rgba(0, 0, 0, 0.18);
@@ -36,11 +38,19 @@ form {
 
 }
 
+#container.sign-up {
+	height: 600px;
+	position: relative;
+	margin-bottom: 50px;
+	padding-bottom: 90px;
+}
+
 input {
 	outline: none;
 }
 
-input#username,#pass {
+
+input#username,#pass,#confirm-pass,#name,#email {
 	padding-left: 10px;
 	margin: 10px;
 	margin-top: 12px;
@@ -54,11 +64,11 @@ input#username,#pass {
 
 }
 
-input#username:hover,#pass:hover {
+input#username:hover,#pass:hover,#confirm-pass:hover,#name:hover,#email:hover {
 	box-shadow: 0 0 5px rgba(81, 203, 238, 1);
 }
 
-input#username:focus,#pass:focus {
+input#username:focus,#pass:focus,#confirm-pass:focus,#name:focus,#email:focus {
 	box-shadow: 0 0 10px rgba(20, 150, 128, 1);
 }
 
@@ -79,6 +89,11 @@ input.sign-button:hover {
 
 }
 
+input.sign-button#sign-up-button {
+	width: 400px;
+	margin-left: 0;
+}
+
 .bottom-right {
 	float: right;
 	position: absolute;
@@ -95,10 +110,22 @@ input.sign-button:hover {
 
 @media only screen and (max-width: 500px) {
   #container {
-  	height: 240px;
+  	height: 300px;
   	width: 300px;
   }
   form {
   	margin: auto;
   }
+
+  input.sign-button#sign-up-button {
+	width: 300px;
+	margin-left: 0;
+}
+}
+
+/* sign up page */
+.wrapper-to-action {
+	text-align: center;
+	position: relative;
+	margin: 0;
 }
