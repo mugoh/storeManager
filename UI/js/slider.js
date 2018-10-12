@@ -24,5 +24,5 @@ function start_slides() {
 
     slides[slide_count-1].style.display = "block";  
     slide_mark[slide_count-1].className += " active";
-    setTimeout(start_slides, 1000); // Change image every 2 seconds
+    setTimeout(start_slides, 10000); // Change image every 2 seconds
 }
