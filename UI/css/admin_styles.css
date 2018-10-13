@@ -94,3 +94,10 @@ li {
     text-decoration: none;
 
 }
+
+
+/*cards for products */
+
+.product-card img {
+  width: 100%;
+}
