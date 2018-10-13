@@ -43,3 +43,18 @@ textarea#description {
     resize: none;
 
 }
+
+.nav-sign-in .sign-up-for-new-upgrade {
+	color: #FF5733 ;
+	font-weight: bolder;
+	padding: 8px;
+	transform: all 2s ease;
+	background-color: #fff;
+	border: 2px solid #23D60D;
+	border-radius: 10px;
+}
+
+.nav-sign-in .sign-up-for-new-upgrade:hover {
+	background-color: #23D60D;
+	color: #fff;
+}
