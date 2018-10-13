@@ -78,6 +78,8 @@
   left: 5px;
   padding-right: 0px;
   border: 1px solid black;
+  border-right: none;
+  padding-left: 10px;
 }
 
 .product-cards {
