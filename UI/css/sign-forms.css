@@ -50,7 +50,7 @@ input {
 }
 
 
-input#username,#pass,#confirm-pass,#name,#email {
+input#username,#pass,#confirm-pass,#name,#email,#description {
 	padding-left: 10px;
 	margin: 10px;
 	margin-top: 12px;
