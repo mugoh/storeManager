@@ -32,9 +32,9 @@
 <div id="container">       
 	<form>
 		<label for="username">Username or email:</label>
-		<input type="text" id="username" name="username">
+		<input type="text" id="username" name="username" minlength="5" required="required">
 		<label for="password">Password:</label>
-		<input type="password" id="pass" name="password">
+		<input type="password" id="pass" name="password" minlength="6" maxlength="12" required="required">
 		<div id="bottom">
 			<input type="checkbox"><label class="check"for="checkbox">Keep me signed in</label><br/>
 			<input class="sign-button" type="submit" value="Sign in">

@@ -35,15 +35,15 @@
 	<form>
 		
 		<label for="name">Name:</label>
-		<input type="text" id="name" name="name">
+		<input type="text" id="name" name="name" minlength="5" required="required" title="Name should have at least 5 letters">
 		<label for="email">Email:</label>
-		<input type="text" id="email" name="email">
+		<input type="email" id="email" name="email" required="required" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" title="please enter a valid email address">
 		<label for="username">Username:</label>
-		<input type="text" id="username" name="username">
+		<input type="text" id="username" name="username" required="required" pattern="[a-zA-Z0-9]{5,10}" title="username should have 5 - 10 letters with no special characters">
 		<label for="password">Password:</label>
-		<input type="password" id="pass" name="password">
+		<input type="password" id="pass" name="password" required="required" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" title="Password must contain at least one digit, one uppercase, one lowercase letter, and at least 6 characters">
 		<label for="confirm-password">Confirm Password:</label>
-		<input type="password" id="confirm-pass" name="confirm-password">
+		<input type="password" id="confirm-pass" name="confirm-password" required="required" minlength="6" maxlength="12" title="Passwords should be the same">
 		<div id="bottom">
 			<input class="sign-button" id="sign-up-button" type="submit" value="Sign Up">			
 			<a class="bottom-right" href="#default">Terms of use and agreement</a>
