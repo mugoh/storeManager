@@ -1,0 +1,25 @@
+input[type=text] {
+    width: 180px;
+    box-sizing: border-box;
+    border: 2px solid  #9d929a;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #fff;
+    background-color:  #bcbbbc ;
+    background-position: 10px 10px; 
+    background-repeat: no-repeat;
+    padding: 3px 10px 3px 20px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+
+}
+
+input[type=text]:focus {
+    width: 200px;
+}
+
+.search-to-del {
+   margin-top: -20px;
+   position: relative;
+   left: 35%;
+}
