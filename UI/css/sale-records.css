@@ -1,0 +1,25 @@
+
+.sales-records-container {
+	padding: 10px;
+	margin: 20px;
+}
+
+.sales-records-container table {
+	border-collapse: collapse;
+    width: 100%;
+}
+
+
+.sales-records-container td,th {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.sales-records-container tr:hover {
+	background-color: #ebf9f6 ;
+}
+
+.sales-records-container a:hover {
+	color: #409fd0  ;
+}
