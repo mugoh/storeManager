@@ -1,0 +1,5 @@
+
+
+input#confirm-pass:hover {
+	cursor: not-allowed;
+}
