@@ -5,6 +5,9 @@
 
 [![Coverage Status](https://coveralls.io/repos/github/hogum/storeManager/badge.svg?branch=project-app)](https://coveralls.io/github/hogum/storeManager?branch=project-app)
 
+
+[![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/hogum/storeManager)
+
 A web application to help store managers maintain their inventories and manage sale records.
 
 
