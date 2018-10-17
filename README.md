@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.com/hogum/storeManager.svg?branch=project-app)](https://travis-ci.com/hogum/storeManager)
 
 
+[![Coverage Status](https://coveralls.io/repos/github/hogum/storeManager/badge.svg?branch=project-app)](https://coveralls.io/github/hogum/storeManager?branch=project-app)
 
 A web application to help store managers maintain their inventories and manage sale records.
 
