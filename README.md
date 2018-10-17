@@ -1,7 +1,7 @@
 # storeManager
 
+[![Build Status](https://travis-ci.com/hogum/storeManager.svg?branch=project-app)](https://travis-ci.com/hogum/storeManager)
 A web application to help store managers maintain their inventories and manage sale records.
-
 
 
 
