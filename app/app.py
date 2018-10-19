@@ -371,6 +371,7 @@ class AllProductsAPI(Resource):
                         for product in products]
         }
 
+    @admin_auth.login_required
     def post(self):
         elements = self.parse.parse_args()
 
@@ -422,6 +423,7 @@ class ProductAPI(Resource):
             'product': marshal(product[0], product_fields)
         }
 
+    @admin_auth.login_required
     def put(self, id):
         product = [product for product in products if product['id'] is id]
 
@@ -437,6 +439,7 @@ class ProductAPI(Resource):
             'product': marshal(product, product_fields)
         }
 
+    @admin_auth.login_required
     def delete(self, id):
         product = [product for product in products if product['id'] is id]
 
@@ -458,6 +461,3 @@ api.add_resource(AllProductsAPI, '/stman/api/v1.0/products',
                  endpoint='products')
 api.add_resource(ProductAPI, '/stman/api/v1.0/products/<int:id>',
                  endpoint='product')
-
-if __name__ == '__main__':
-    my_app.run(debug=True)
