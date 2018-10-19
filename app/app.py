@@ -24,8 +24,8 @@ sales = [
         'transaction_type': u'Cash on Delivery',
         'complete': False,
 
-        'gifts': 1,  # Anything to reduce sale e.g discounts
-        'total': 276
+        'gifts': 100,  # Anything to reduce sale e.g discounts
+        'price': 276,
     },
 
     {
@@ -46,15 +46,27 @@ sales = [
         'complete': False,
 
         'gifts': 0,  # Any reduction in sale price
-        'total': 355
+        'price': 355
     }
 
 ]
+
+# calculate total cost of sale
+
+for each_sale in sales:
+    each_sale.update(
+        {
+            'total': each_sale.get('quantity') *
+            each_sale.get('price') -
+            each_sale.get('gifts')
+        }
+    )
 
 sale_fields = {
     'sales_uri': fields.Url('sale'),
     'attendant': fields.String,
     'gifts': fields.Integer,
+    'price': fields.Fixed,
     'total': fields.Fixed
 }
 
@@ -118,6 +130,7 @@ class AllSalesAPI(Resource):
                                 location='json')
 
         self.parse.add_argument('contact', type=list,
+                                default=['phone', 'email'],
                                 location='json')
 
         # transaction details
@@ -139,14 +152,14 @@ class AllSalesAPI(Resource):
                                 default='0',
                                 location='json')
 
-        self.parse.add_argument('total', type=int, required=True,
+        self.parse.add_argument('price', type=int, required=True,
+                                help="""You sure are not giving it away for free
+                                """,
                                 location='json')
 
         self.parse.add_argument('description', type=str,
                                 default='',
                                 location='json')
-
-
 
         super(AllSalesAPI, self).__init__()
 
@@ -159,8 +172,36 @@ class AllSalesAPI(Resource):
         elements = self.parse.parse_args()
 
         sale = {
-
+            'sales_record': sales[-1]['sales_record'] + 1,
+            'attendant': elements['attendant'],
+            'name': elements['name'],
+            'address': elements['address'],
+            'contact': elements['contact'],
+            'product': elements['product'],
+            'quantity': elements['quantity'],
+            'date': datetime.now(),
+            'description': elements['description'],
+            'transaction_type': elements['transaction_type'],
+            'complete': False,
+            'gifts': 0,
+            'price': elements['price']
         }
+
+        # Find total cost of sale
+        sale.update(
+            {
+                'total': sale.get('quantity') *
+                sale.get('price') -
+                sale.get('gifts')
+            }
+        )
+
+        # Add new sale to sales record
+        sales.append(sale)
+
+        return {
+            'sale': marshal(sale, sale_fields)
+        }, 201
 
 
 class SaleAPI(Resource):
