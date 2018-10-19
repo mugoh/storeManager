@@ -48,6 +48,50 @@ sales = [
 
 ]
 
+sale_fields = {
+    'sales_uri': fields.Url('sale'),
+    'attendant': fields.String,
+    'gifts': fields.Integer,
+    'total': fields.Fixed
+}
+
+"""
+    Output nested customer details
+                                    """
+sale_fields['customer'] = {}
+sale_fields['customer']['Name'] = fields.String(attribute='name')
+sale_fields['customer']['Address'] = fields.String(attribute='address')
+
+# Create list for customer contacts
+sale_fields['customer']['Contact'] = fields.List(
+    fields.String, attribute='contact'
+)
+
+
+"""
+    Nest the transaction info
+                                    """
+
+sale_fields['transaction_info'] = {}
+
+sale_fields['transaction_info']['Product'] = fields.String(attribute='product')
+sale_fields['transaction_info']['Quantity'] = fields.String(
+    attribute='quantity'
+)
+sale_fields['transaction_info']['Date'] = fields.DateTime(
+    attribute='date', dt_format='rfc822'
+)
+sale_fields['transaction_info']['Description'] = fields.String(
+    attribute='description'
+)
+sale_fields['transaction_info']['Transaction_type'] = fields.String(
+    attribute='transaction_type'
+)
+sale_fields['transaction_info']['Complete'] = fields.Boolean(
+    attribute='complete'
+)
 
 
 
+if __name__ == '__main__':
+    my_app.run(debug=True)
