@@ -18,7 +18,7 @@ sales = [
 
         # Transaction Info
         'product': u'Spam 2.0',
-        'quantity': u'1',
+        'quantity': 1,
         'date': datetime(2018, 6, 6, 5, 28, 56, 243),
         'description': u'Hot with extra extra spam',
         'transaction_type': u'Cash on Delivery',
@@ -39,7 +39,7 @@ sales = [
 
         # Transaction Info
         'product': u'Spam 2.2',
-        'quantity': u'1',
+        'quantity': 1,
         'date': datetime(2018, 3, 16, 10, 3, 10, 7345),
         'description': u'Black with red eatable margins',
         'transaction_type': u'Credit',
@@ -78,7 +78,7 @@ sale_fields['customer']['Contact'] = fields.List(
 sale_fields['transaction_info'] = {}
 
 sale_fields['transaction_info']['Product'] = fields.String(attribute='product')
-sale_fields['transaction_info']['Quantity'] = fields.String(
+sale_fields['transaction_info']['Quantity'] = fields.Integer(
     attribute='quantity'
 )
 sale_fields['transaction_info']['Date'] = fields.DateTime(
@@ -97,19 +97,30 @@ sale_fields['transaction_info']['Complete'] = fields.Boolean(
 
 class AllSalesAPI(Resource):
     def __init__(self):
+
+        """
+        verify arguments' are in correct format
+        """
+
         self.parse = reqparse.RequestParser()
         self.parse.add_argument('attendant', type=str,
                                 required=True,
                                 help="A sale need's an attendant",
                                 location='json')
 
-        self.parse.add_argument('customer', type=dict,
-                                default={
-                                    'name': 'Anonymous',
-                                    'address': 'unknown',
-                                    'contact': 'not stated'
-                                },
+        # Customer details
+        self.parse.add_argument('name', type=str,
+                                default='Anonymous',
                                 location='json')
+
+        self.parse.add_argument('address', type=str,
+                                default='Unknown',
+                                location='json')
+
+        self.parse.add_argument('contact', type=list,
+                                location='json')
+
+        # transaction details
 
         self.parse.add_argument('product', type=str,
                                 required=True,
@@ -120,11 +131,35 @@ class AllSalesAPI(Resource):
                                 help="How many items", default=1,
                                 location='json')
 
+        self.parse.add_argument('transaction_type', type=str,
+                                default='Cash on Delivery',
+                                location='json')
+
+        self.parse.add_argument('gifts', type=int,
+                                default='0',
+                                location='json')
+
+        self.parse.add_argument('total', type=int, required=True,
+                                location='json')
+
+        self.parse.add_argument('description', type=str,
+                                default='',
+                                location='json')
+
+
+
         super(AllSalesAPI, self).__init__()
 
     def get(self):
         return {
             'sales': [marshal(sale, sale_fields) for sale in sales]
+        }
+
+    def post(self):
+        elements = self.parse.parse_args()
+
+        sale = {
+
         }
 
 
