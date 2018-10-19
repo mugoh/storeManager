@@ -1,6 +1,7 @@
 
 from flask import Flask, abort
 from flask_restful import Api, fields, Resource, reqparse, marshal
+from datetime import datetime
 
 my_app = Flask(__name__, static_url_path="")
 api = Api(my_app)
@@ -127,8 +128,32 @@ class AllSalesAPI(Resource):
         }
 
 
+class SaleAPI(Resource):
+    """docstring for SaleAPI"""
+    def __init__(self):
+        self.parse = reqparse.RequestParser()
+        self.parse.add_argument('attendant', type=str, location='json')
+        self.parse.add_argument('transaction_info', type=dict, location='json')
+        self.parse.add_argument('gifts', type=int, location='json')
+        self.parse.add_argument('total',
+                                type=float,
+                                location='json'
+                                )
+        super(SaleAPI, self).__init__()
+
+    def get(self, sales_record):
+        sale = [sale for sale in sales if sale['sales_record'] == sales_record]
+
+        if not sale:
+            abort(404)
+
+        return {'sale': marshal(sale[0], sale_fields)}
+
 
 api.add_resource(AllSalesAPI, '/stman/api/v1.0/sales', endpoint='sales')
+api.add_resource(SaleAPI, '/stman/api/v1.0/sales/<int:sales_record>',
+                 endpoint='sale'
+                 )
 
 if __name__ == '__main__':
     my_app.run(debug=True)
