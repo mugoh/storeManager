@@ -1,10 +1,13 @@
 
-from flask import Flask, abort
+from flask import Flask, abort, jsonify, make_response
 from flask_restful import Api, fields, Resource, reqparse, marshal
 from datetime import datetime
+from flask_httpauth import HTTPBasicAuth
 
 my_app = Flask(__name__, static_url_path="")
 api = Api(my_app)
+admin_auth = HTTPBasicAuth()
+auth = HTTPBasicAuth()
 
 sales = [
     {
@@ -106,8 +109,51 @@ sale_fields['transaction_info']['Complete'] = fields.Boolean(
     attribute='complete'
 )
 
+admin_users = {
+    'manager': 'man',
+}
+
+users = {
+    'manager': 'man',
+    'attendant': 'att'
+}
+
+
+@admin_auth.get_password
+def use_password(username):
+    if username in users:
+        return admin_users.get(username)
+
+    return None
+
+
+@admin_auth.error_handler
+def restricted():
+    return make_response(jsonify({
+        'message': "Access not allowed"
+    }), 403
+    )
+
+
+@auth.get_password
+def u_password(username):
+    if username in users:
+        return users.get(username)
+
+    return None
+
+
+@auth.error_handler
+def restrict():
+    return make_response(jsonify({
+        'message': "Access not allowed"
+    }), 403
+    )
+
 
 class AllSalesAPI(Resource):
+    decorators = [admin_auth.login_required]
+
     def __init__(self):
 
         """
@@ -205,6 +251,7 @@ class AllSalesAPI(Resource):
 
 
 class SaleAPI(Resource):
+
     """docstring for SaleAPI"""
     def __init__(self):
         self.parse = reqparse.RequestParser()
@@ -217,6 +264,7 @@ class SaleAPI(Resource):
                                 )
         super(SaleAPI, self).__init__()
 
+    @auth.login_required
     def get(self, sales_record):
         sale = [sale for sale in sales if sale['sales_record'] == sales_record]
 
@@ -225,6 +273,7 @@ class SaleAPI(Resource):
 
         return {'sale': marshal(sale[0], sale_fields)}
 
+    @admin_auth.login_required
     def put(self, sales_record):
         sale = [sale for sale
                 in sales if sale['sales_record'] is sales_record
@@ -236,12 +285,13 @@ class SaleAPI(Resource):
         elements = self.parse.parse_args()
 
         # update any changed element
-        for key, value in elements.items():
+        for key, value in list(elements.items()):
             if value:
                 sale[0][key] = value
 
         return {'sale': marshal(sale[0], sale_fields)}
 
+    @admin_auth.login_required
     def delete(self, sales_record):
         sale = [sale for sale
                 in sales if sale['sales_record'] is sales_record
