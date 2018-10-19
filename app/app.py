@@ -92,6 +92,41 @@ sale_fields['transaction_info']['Complete'] = fields.Boolean(
 )
 
 
+class AllSalesAPI(Resource):
+    def __init__(self):
+        self.parse = reqparse.RequestParser()
+        self.parse.add_argument('attendant', type=str,
+                                required=True,
+                                help="A sale need's an attendant",
+                                location='json')
+
+        self.parse.add_argument('customer', type=dict,
+                                default={
+                                    'name': 'Anonymous',
+                                    'address': 'unknown',
+                                    'contact': 'not stated'
+                                },
+                                location='json')
+
+        self.parse.add_argument('product', type=str,
+                                required=True,
+                                help="A product to sell sure has a name",
+                                location='json')
+
+        self.parse.add_argument('quantity', type=int,
+                                help="How many items", default=1,
+                                location='json')
+
+        super(AllSalesAPI, self).__init__()
+
+    def get(self):
+        return {
+            'sales': [marshal(sale, sale_fields) for sale in sales]
+        }
+
+
+
+api.add_resource(AllSalesAPI, '/stman/api/v1.0/sales', endpoint='sales')
 
 if __name__ == '__main__':
     my_app.run(debug=True)
