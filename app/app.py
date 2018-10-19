@@ -51,7 +51,7 @@ sales = [
 
 ]
 
-# calculate total cost of every sale
+# calculate total cost of sale
 
 for each_sale in sales:
     each_sale.update(
@@ -110,6 +110,10 @@ sale_fields['transaction_info']['Complete'] = fields.Boolean(
 class AllSalesAPI(Resource):
     def __init__(self):
 
+        """
+        verify arguments' are in correct format
+        """
+
         self.parse = reqparse.RequestParser()
         self.parse.add_argument('attendant', type=str,
                                 required=True,
@@ -145,7 +149,7 @@ class AllSalesAPI(Resource):
                                 location='json')
 
         self.parse.add_argument('gifts', type=int,
-                                default=0,
+                                default='0',
                                 location='json')
 
         self.parse.add_argument('price', type=int, required=True,
@@ -203,68 +207,27 @@ class AllSalesAPI(Resource):
 class SaleAPI(Resource):
     """docstring for SaleAPI"""
     def __init__(self):
-
         self.parse = reqparse.RequestParser()
-        self.parse.add_argument('attendant', type=str,
-                                required=True,
-                                help="A sale need's an attendant",
-                                location='json')
-
-        # Customer details
-        self.parse.add_argument('name', type=str,
-                                default='Anonymous',
-                                location='json')
-
-        self.parse.add_argument('address', type=str,
-                                default='Unknown',
-                                location='json')
-
-        self.parse.add_argument('contact', type=list,
-                                default=['phone', 'email'],
-                                location='json')
-
-        # transaction details
-
-        self.parse.add_argument('product', type=str,
-                                required=True,
-                                help="A product to sell sure has a name",
-                                location='json')
-
-        self.parse.add_argument('quantity', type=int,
-                                help="How many items", default=1,
-                                location='json')
-
-        self.parse.add_argument('transaction_type', type=str,
-                                default='Cash on Delivery',
-                                location='json')
-
-        self.parse.add_argument('gifts', type=int,
-                                default='0',
-                                location='json')
-
-        self.parse.add_argument('price', type=int, required=True,
-                                help="""You sure are not giving it away for free
-                                """,
-                                location='json')
-
-        self.parse.add_argument('description', type=str,
-                                default='',
-                                location='json')
-
+        self.parse.add_argument('attendant', type=str, location='json')
+        self.parse.add_argument('transaction_info', type=dict, location='json')
+        self.parse.add_argument('gifts', type=int, location='json')
+        self.parse.add_argument('total',
+                                type=float,
+                                location='json'
+                                )
         super(SaleAPI, self).__init__()
 
-    def get(self, requested_sales_record):
-        sale = [sale for sale
-                in sales if sale['sales_record'] is requested_sales_record]
+    def get(self, sales_record):
+        sale = [sale for sale in sales if sale['sales_record'] == sales_record]
 
         if not sale:
             abort(404)
 
         return {'sale': marshal(sale[0], sale_fields)}
 
-    def put(self, requested_sales_record):
+    def put(self, sales_record):
         sale = [sale for sale
-                in sales if sale['sales_record'] is requested_sales_record
+                in sales if sale['sales_record'] is sales_record
                 ]
 
         if not sale:
@@ -279,6 +242,18 @@ class SaleAPI(Resource):
 
         return {'sale': marshal(sale[0], sale_fields)}
 
+    def delete(self, sales_record):
+        sale = [sale for sale
+                in sales if sale['sales_record'] is sales_record
+                ]
+
+        if not sale:
+            abort(404)
+        sales.remove(sale[0])
+
+        return {
+            'Effect': True
+        }
 
 
 api.add_resource(AllSalesAPI, '/stman/api/v1.0/sales', endpoint='sales')
