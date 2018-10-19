@@ -54,7 +54,29 @@ sales = [
 
 ]
 
-# calculate total cost of sale
+products = [
+    {
+        'title': 'Bacon&Spam',
+        'category': 'Hair Likes Food',
+        'price': 934,
+        'in stock': True,
+        'date received': datetime(2018, 7, 10, 4, 2, 8, 564),
+        'id': 1
+
+    },
+
+    {
+        'title': 'Innocent Coconut Water',
+        'category': 'Women sure can Sleep',
+        'price': 94534,
+        'in stock': True,
+        'date received': datetime(
+            2018, 5, 30, 22, 12, 38, 649),
+        'id': 2
+    }
+]
+
+# calculate total cost of each sale
 
 for each_sale in sales:
     each_sale.update(
@@ -64,6 +86,16 @@ for each_sale in sales:
             each_sale.get('gifts')
         }
     )
+
+product_fields = {
+    'title': fields.String,
+    'category': fields.String,
+    'price': fields.Float,
+    'in stock': fields.Boolean,
+    'date received': fields.DateTime,
+    'url': fields.Url('product')  # Ensure user doen't
+                                  # need to know how to generate url
+}
 
 sale_fields = {
     'sales_uri': fields.Url('sale'),
@@ -108,6 +140,7 @@ sale_fields['transaction_info']['Transaction_type'] = fields.String(
 sale_fields['transaction_info']['Complete'] = fields.Boolean(
     attribute='complete'
 )
+
 
 admin_users = {
     'manager': 'man',
@@ -304,10 +337,127 @@ class SaleAPI(Resource):
         }
 
 
+class AllProductsAPI(Resource):
+    """docstring for AllProductsAPI"""
+    def __init__(self):
+        self.parse = reqparse.RequestParser()
+        self.parse.add_argument('title', type=str, required=True,
+                                help="Please add a title",
+                                location='json'
+                                )
+
+        self.parse.add_argument('category', type=str,
+                                default='None',
+                                location='json'
+                                )
+
+        self.parse.add_argument('price', type=int,
+                                required=True,
+                                help="You are not \
+                                    allowed to give out stuff for free",
+                                location='json'
+                                )
+
+        self.parse.add_argument('in stock', type=bool,
+                                default=True,
+                                location='json'
+                                )
+
+        super(AllProductsAPI, self).__init__()
+
+    def get(self):
+        return {
+            'product': [marshal(product, product_fields)
+                        for product in products]
+        }
+
+    def post(self):
+        elements = self.parse.parse_args()
+
+        product = {
+            'title': elements['title'],
+            'category': elements['category'],
+            'price': elements['price'],
+            'in stock': True,
+            'date received': datetime.now(),
+            'id': products[-1]['id'] + 1
+        }
+
+        products.append(product)
+
+        return {
+            'product': marshal(product, product_fields)
+        }, 201
+
+
+class ProductAPI(Resource):
+    """docstring for ProductAPI"""
+    def __init__(self):
+        self.parse = reqparse.RequestParser()
+        self.parse.add_argument('title', type=str,
+                                location='json'
+                                )
+
+        self.parse.add_argument('category', type=str,
+                                location='json'
+                                )
+
+        self.parse.add_argument('price', type=int,
+                                location='json'
+                                )
+
+        self.parse.add_argument('in stock', type=bool,
+                                location='json'
+                                )
+
+        super(ProductAPI, self).__init__()
+
+    def get(self, id):
+        product = [product for product in products if product['id'] is id]
+
+        if not product:
+            abort(404)
+
+        return {
+            'product': marshal(product[0], product_fields)
+        }
+
+    def put(self, id):
+        product = [product for product in products if product['id'] is id]
+
+        if not product:
+            abort(404)
+        elements = self.parse.parse_args()
+
+        for key, value in list(elements.items()):
+            if value:
+                product[0][key] = value
+
+        return {
+            'product': marshal(product, product_fields)
+        }
+
+    def delete(self, id):
+        product = [product for product in products if product['id'] is id]
+
+        if not product:
+            abort(404)
+        product.remove(product[0])
+
+        return {
+            'Status': True
+        }
+
+
 api.add_resource(AllSalesAPI, '/stman/api/v1.0/sales', endpoint='sales')
 api.add_resource(SaleAPI, '/stman/api/v1.0/sales/<int:sales_record>',
                  endpoint='sale'
                  )
+
+api.add_resource(AllProductsAPI, '/stman/api/v1.0/products',
+                 endpoint='products')
+api.add_resource(ProductAPI, '/stman/api/v1.0/products/<int:id>',
+                 endpoint='product')
 
 if __name__ == '__main__':
     my_app.run(debug=True)
