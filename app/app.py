@@ -1,7 +1,9 @@
 
 from flask import Flask, abort
+from flask_restful import Api, fields, Resource, reqparse, marshal
 
 my_app = Flask(__name__, static_url_path="")
+api = Api(my_app)
 
 sales = [
     {
