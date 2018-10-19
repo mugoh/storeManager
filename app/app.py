@@ -152,7 +152,7 @@ def restrict():
 
 
 class AllSalesAPI(Resource):
-    decorators = [admin_auth.login_required]
+    decorators = [auth.login_required]
 
     def __init__(self):
 
@@ -251,6 +251,7 @@ class AllSalesAPI(Resource):
 
 
 class SaleAPI(Resource):
+    decorators = [admin_auth.login_required]
 
     """docstring for SaleAPI"""
     def __init__(self):
@@ -264,7 +265,6 @@ class SaleAPI(Resource):
                                 )
         super(SaleAPI, self).__init__()
 
-    @auth.login_required
     def get(self, sales_record):
         sale = [sale for sale in sales if sale['sales_record'] == sales_record]
 
@@ -273,7 +273,6 @@ class SaleAPI(Resource):
 
         return {'sale': marshal(sale[0], sale_fields)}
 
-    @admin_auth.login_required
     def put(self, sales_record):
         sale = [sale for sale
                 in sales if sale['sales_record'] is sales_record
@@ -291,7 +290,6 @@ class SaleAPI(Resource):
 
         return {'sale': marshal(sale[0], sale_fields)}
 
-    @admin_auth.login_required
     def delete(self, sales_record):
         sale = [sale for sale
                 in sales if sale['sales_record'] is sales_record
