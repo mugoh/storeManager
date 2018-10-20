@@ -90,7 +90,7 @@ for each_sale in sales:
 product_fields = {
     'title': fields.String,
     'category': fields.String,
-    'price': fields.Float,
+    'price': fields.Integer,
     'in stock': fields.Boolean,
     'date received': fields.DateTime,
     'url': fields.Url('product')  # Ensure user doen't
