@@ -101,8 +101,8 @@ sale_fields = {
     'sales_uri': fields.Url('sale'),
     'attendant': fields.String,
     'gifts': fields.Integer,
-    'price': fields.Fixed,
-    'total': fields.Fixed
+    'price': fields.Integer,
+    'total': fields.Integer
 }
 
 """
@@ -190,7 +190,7 @@ class AllSalesAPI(Resource):
     def __init__(self):
 
         """
-        verify arguments' are in correct format
+        Verify arguments' are in correct type.
         """
 
         self.parse = reqparse.RequestParser()
