@@ -6,6 +6,6 @@ my_app = Flask(__name__)
 
 my_app_settings = os.getenv(
     'APP_SETTINGS',
-    'project.config.DevConfig'
+    'app.config.DevelopmentConfig'
 )
 my_app.config.from_object(my_app_settings)
