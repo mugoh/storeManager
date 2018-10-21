@@ -2,7 +2,10 @@ import os
 from flask import Flask
 
 my_app = Flask(__name__)
-my_app.config.from_object(os.environ['APP_SETTINGS'])
+#my_app.config.from_object(os.environ['APP_SETTINGS'])
 
-return my_app
-
+my_app_settings = os.getenv(
+    'APP_SETTINGS',
+    'project.config.DevConfig'
+)
+app.config.from_object(my_app_settings)
