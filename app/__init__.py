@@ -1,13 +1,8 @@
-import os
+
 from flask import Flask
 
-# Initialize application
-my_app = Flask(__name__, static_folder="")
+# Define the application object
+my_app = Flask(__name__)
 
-# app configuration
-my_app_settings = os.getenv(
-    'APP_SETTINGS',
-    'my_app.config.DevelopmentConfig'
-)
-my_app.config.from_object(my_app_settings)
-
+# Configurations
+my_app.config.from_object('config')
