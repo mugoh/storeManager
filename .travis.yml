@@ -6,9 +6,9 @@ cache: pip
 install:
   - pip install -r requirements.txt
 
-
 script:
-  - py.test coveralls/tests.py --doctest-modules --pep8 coveralls -v --cov coveralls --cov-report term-missing
+  - coverage run -m pytest
+  - py.test --cov=app
 
 after_success:
   - coveralls
