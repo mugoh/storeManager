@@ -8,4 +8,4 @@ my_app_settings = os.getenv(
     'APP_SETTINGS',
     'project.config.DevConfig'
 )
-app.config.from_object(my_app_settings)
+my_app.config.from_object(my_app_settings)
