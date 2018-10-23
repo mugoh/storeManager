@@ -16,6 +16,9 @@ def create_app():
     api.add_resource(sale_views.SaleAPI,
                      '/stman/api/v1.0/sales/<int:sales_record>',
                      endpoint='sale')
+    api.add_resource(product_views.ProductAPI,
+                     '/stman/api/v1.0/products/<int:id>',
+                     endpoint='product')
 
     my_app.register_blueprint(store_blueprint)
     return my_app
