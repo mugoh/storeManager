@@ -1,6 +1,7 @@
 from flask_restful import Resource, reqparse, marshal, fields
 from models import sales
 from datetime import datetime
+from flask import abort
 
 sales = sales.Sales.salesList()
 
@@ -91,11 +92,63 @@ class SalesAPI(Resource):
         )
 
         # Add new sale to sales record
-        sales.append(sale)
+        sales.sales.append(sale)
 
         return {
             'sale': marshal(sale, sale_fields)
         }, 201
+
+
+class SaleAPI(Resource):
+    def __init__(self):
+        self.parse = reqparse.RequestParser()
+        self.parse.add_argument('attendant', type=str, location='json')
+        self.parse.add_argument('transaction_info', type=dict, location='json')
+        self.parse.add_argument('gifts', type=int, location='json')
+        self.parse.add_argument('total',
+                                type=float,
+                                location='json'
+                                )
+        super(SaleAPI, self).__init__()
+
+    def get(self, sales_record):
+        sale = [sale for sale in sales.sales if sale[
+            'sales_record'] == sales_record]
+
+        if not sale:
+            abort(404)
+
+        return {'sale': marshal(sale[0], sale_fields)}
+
+    def put(self, sales_record):
+        sale = [sale for sale
+                in sales.sales if sale['sales_record'] is sales_record
+                ]
+
+        if not sale:
+            abort(404)
+
+        elements = self.parse.parse_args()
+
+        # update any changed element
+        for key, value in list(elements.items()):
+            if value:
+                sale[0][key] = value
+
+        return {'sale': marshal(sale[0], sale_fields)}
+
+    def delete(self, sales_record):
+        sale = [sale for sale
+                in sales.sales if sale['sales_record'] is sales_record
+                ]
+
+        if not sale:
+            abort(404)
+        sales.remove(sale[0])
+
+        return {
+            'Effect': True
+        }
 
 
 sale_fields = {
