@@ -2,7 +2,7 @@ from flask_restful import Resource, reqparse, marshal, fields
 from models import products
 from datetime import datetime
 
-products = products.Products
+products = products.Products.productsList()
 
 
 class ProductsAPI(Resource):

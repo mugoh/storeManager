@@ -2,7 +2,7 @@ from flask_restful import Resource, reqparse, marshal, fields
 from models import sales
 from datetime import datetime
 
-sales = sales.Sales
+sales = sales.Sales.salesList()
 
 
 class SalesAPI(Resource):
