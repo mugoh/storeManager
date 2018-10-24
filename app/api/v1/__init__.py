@@ -7,5 +7,7 @@ v1 = Blueprint('api', __name__, url_prefix='/api/v1.0')
 api = Api(v1)
 
 api.add_resource(productv.ProductList, '/products')
+api.add_resource(productv.ProductAPI, '/products/<int:id>')
+
 
 app.register_blueprint(v1)

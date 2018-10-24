@@ -15,22 +15,46 @@ class IntitalizeRecord:
         item.id = IntitalizeRecord.record
         self.product_records[IntitalizeRecord.record] = item
 
+    def fetch_record(self, id):
 
-class ProductCheck(Resource):
+        return {
+            'product': self.product_records[id]
+        }
+
+
+product_fields = {
+    'title': fields.String,
+    'category': fields.String,
+    'price': fields.Integer,
+    'in_stock': fields.Integer,
+    'date_received': fields.DateTime,
+    'id': fields.Integer
+}
+
+record_instance = IntitalizeRecord()
+
+
+class ProductAPI(Resource):
     @staticmethod
     def verify_existence(product_id):
-        if product_id not in IntitalizeRecord.product_records:
+        if product_id not in record_instance.product_records:
             reply = f'Product {product_id} unknown. Maybe create it?'
 
             return {
                 'message': reply}
+
+    @marshal_with(product_fields)
+    def get(self, id):
+        self.verify_existence(id)
+
+        return record_instance.fetch_record(id)
 
 
 class ProductList(Resource):
     @marshal_with(product_fields)
     def get(self):
         all = [product for product
-               in IntitalizeRecord.product_records.values()]
+               in record_instance.product_records.values()]
 
         return all
 
@@ -62,25 +86,15 @@ class ProductList(Resource):
         elements = self.parse.parse_args()
 
         product = Products(
-            'title'=elements['title'],
-            'category'=elements['category'],
-            'price'=elements['price'],
-            'in stock'=elements['in_stock'],
-            'date received'=datetime.datetime.now()
+            title=elements['title'],
+            category=elements['category'],
+            price=elements['price'],
+            in_stock=elements['in_stock'],
+            date_received=datetime.datetime.now()
         )
 
-        IntitalizeRecord.post_record(product)
+        record_instance.post_record(product)
 
         return {
             'product': product
         }, 201
-
-
-product_fields = {
-    'title': fields.String,
-    'category': fields.String,
-    'price': fields.Integer,
-    'in_stock': fields.Integer,
-    'date_received': fields.DateTime,
-    'id': fields.Integer
-}
