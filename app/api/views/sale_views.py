@@ -60,7 +60,7 @@ class SalesAPI(Resource):
 
     def get(self):
         return {
-            'sales': [marshal(sale, sales.sale_fields) for sale in sales.sales]
+            'sales': [marshal(sale, sale_fields) for sale in sales]
         }
 
     def post(self):
@@ -92,7 +92,7 @@ class SalesAPI(Resource):
         )
 
         # Add new sale to sales record
-        sales.sales.append(sale)
+        sales.append(sale)
 
         return {
             'sale': marshal(sale, sale_fields)
@@ -112,7 +112,7 @@ class SaleAPI(Resource):
         super(SaleAPI, self).__init__()
 
     def get(self, sales_record):
-        sale = [sale for sale in sales.sales if sale[
+        sale = [sale for sale in sales if sale[
             'sales_record'] == sales_record]
 
         if not sale:
@@ -122,7 +122,7 @@ class SaleAPI(Resource):
 
     def put(self, sales_record):
         sale = [sale for sale
-                in sales.sales if sale['sales_record'] is sales_record
+                in sales if sale['sales_record'] is sales_record
                 ]
 
         if not sale:
@@ -139,7 +139,7 @@ class SaleAPI(Resource):
 
     def delete(self, sales_record):
         sale = [sale for sale
-                in sales.sales if sale['sales_record'] is sales_record
+                in sales if sale['sales_record'] is sales_record
                 ]
 
         if not sale:

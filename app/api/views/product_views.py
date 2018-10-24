@@ -36,7 +36,7 @@ class ProductsAPI(Resource):
     def get(self):
         return {
             'product': [marshal(product, product_fields)
-                        for product in products.products]
+                        for product in products]
         }
 
     def post(self):
@@ -82,7 +82,7 @@ class ProductAPI(Resource):
 
     def get(self, id):
         product = [product for product in
-                   products.products if product['id'] is id]
+                   products if product['id'] is id]
 
         if not product:
             abort(404)
@@ -93,7 +93,7 @@ class ProductAPI(Resource):
 
     def put(self, id):
         product = [product for product in
-                   products.products if product['id'] is id]
+                   products if product['id'] is id]
 
         if not product:
             abort(404)
@@ -109,11 +109,11 @@ class ProductAPI(Resource):
 
     def delete(self, id):
         product = [product for product
-                   in products.products if product['id'] is id]
+                   in products if product['id'] is id]
 
         if not product:
             abort(404)
-        products.products.remove(product[0])
+        products.remove(product[0])
 
         return {
             'Status': True
