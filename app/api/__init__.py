@@ -1,4 +1,4 @@
-from app import create_app
+import app
 
 def start_app():
-	return create_app()
+	return api.create_app()

@@ -22,3 +22,15 @@ class DevelopmentConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
 
+
+class StagingConfig(Config):
+	DEBUG = True
+
+
+
+app_config = {
+	'development': DevelopmentConfig,
+	'testing': TestingConfig,
+	'staging': StagingConfig,
+	'production': ProductionConfig
+}
