@@ -1,6 +1,6 @@
-from app import api
+from app import create_app
 
-app = api.app_instance('development')
+app = create_app('config_setting')
 
 if __name__ == '__main__':
-	app.run(debug=True)
+    app.run(debug=True)
