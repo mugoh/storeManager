@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint
 from flask_restful import Api
-from .views import product_views, sale_views
+from .views import product_views, sale_views, user_views
 from app.instance.config import app_config
 
 store_blueprint = Blueprint("store-man", __name__)
@@ -21,6 +21,9 @@ def create_app(config_setting):
     api.add_resource(product_views.ProductAPI,
                      '/stman/api/v1.0/products/<int:id>',
                      endpoint='product')
+    api.add_resource(user_views.UsersAPI,
+                     '/stman/api/v1.0/users/',
+                     endpoint='users')
 
     my_app.register_blueprint(store_blueprint)
     return my_app
