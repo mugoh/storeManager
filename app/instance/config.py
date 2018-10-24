@@ -26,6 +26,8 @@ class DevelopmentConfig(Config):
 class StagingConfig(Config):
 	DEBUG = True
 
+class TestingConfig(Config):
+	DEBUG = True
 
 
 app_config = {

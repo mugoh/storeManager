@@ -1,7 +1,7 @@
 from flask import Flask, Blueprint
 from flask_restful import Api
-from views import product_views, sale_views
-from instance.config import app_config
+from .views import product_views, sale_views
+from app.instance.config import app_config
 
 store_blueprint = Blueprint("store-man", __name__)
 

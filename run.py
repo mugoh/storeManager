@@ -1,4 +1,6 @@
-from app.api import start_app
+from app import api
+
+app = api.app_instance('development')
 
 if __name__ == '__main__':
-	start_app.run()
+	app.run(debug=True)

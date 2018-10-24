@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse, marshal, fields
-from models import sales
+from app.api.models import sales
 from datetime import datetime
 from flask import abort
 
