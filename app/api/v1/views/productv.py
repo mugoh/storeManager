@@ -1,18 +1,18 @@
 from flask_restful import Resource, reqparse, abort, fields, marshal_with
 import datetime
-from app.api.models.products import Products
+from app.api.v1.models.products import Products
 
 
-class IntitalizeRecord:
+class InitializeRecord:
     record = 0
 
     def __init__(self):
         self.product_records = {}
 
     def post_record(self, item):
-        IntitalizeRecord.record += 1
-        item.id = IntitalizeRecord.record
-        self.product_records[IntitalizeRecord.record] = item
+        InitializeRecord.record += 1
+        item.id = InitializeRecord.record
+        self.product_records[InitializeRecord.record] = item
 
     def fetch_record(self, id):
 
@@ -30,7 +30,7 @@ product_fields = {
     'id': fields.Integer
 }
 
-record_instance = IntitalizeRecord()
+record_instance = InitializeRecord()
 
 
 class ProductAPI(Resource):
@@ -83,7 +83,7 @@ class ProductList(Resource):
 
         elements = self.parse.parse_args()
 
-        product = Products(
+        new_product = Products(
             title=elements['title'],
             category=elements['category'],
             price=elements['price'],
@@ -91,11 +91,9 @@ class ProductList(Resource):
             date_received=datetime.datetime.now()
         )
 
-        record_instance.post_record(product)
+        record_instance.post_record(new_product)
 
-        return {
-            'product': product
-        }, 201
+        return new_product, 201
 
 
 def validate_inputs(element, input_arg):

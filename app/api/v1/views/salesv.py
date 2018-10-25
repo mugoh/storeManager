@@ -25,8 +25,8 @@ sale_instance = InitializeRecord()
 
 sale_fields = {
     'attendant': fields.String,
-    'sale_record': fields.Integer,
-    'customer_name': fields.Integer,
+    'id': fields.Integer,
+    'customer_name': fields.String,
     'product': fields.String,
     'quantity': fields.Integer,
     'date': fields.DateTime,
@@ -61,17 +61,17 @@ class SalesList(Resource):
     @marshal_with(sale_fields)
     def post(self):
         self.parse = reqparse.RequestParser()
-        self.parse.add_argument('attendant', type=validate,
+        self.parse.add_argument('attendant', type=validate_inputs,
                                 required=True,
                                 help="A sale need's an attendant",
                                 location='json')
 
         # Customer details
-        self.parse.add_argument('customer_name', type=validate,
+        self.parse.add_argument('customer_name', type=validate_inputs,
                                 default='Anonymous',
                                 location='json')
 
-        self.parse.add_argument('product', type=validate,
+        self.parse.add_argument('product', type=validate_inputs,
                                 required=True,
                                 help="A product to sell sure has a name",
                                 location='json')
@@ -80,7 +80,7 @@ class SalesList(Resource):
                                 help="How many items", default=1,
                                 location='json')
 
-        self.parse.add_argument('transaction_type', type=validate,
+        self.parse.add_argument('transaction_type', type=validate_inputs,
                                 default='Cash on Delivery',
                                 location='json')
 

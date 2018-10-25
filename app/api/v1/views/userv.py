@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse, abort
-from app.api.models.users import Users
+from app.api.v1.models.users import Users
 import random
 
 
@@ -22,7 +22,6 @@ class IntitalizeRecord:
 record_instance = IntitalizeRecord()
 
 
-
 def validate_inputs(element, input_arg):
     if not element:
         raise ValueError(
@@ -30,7 +29,8 @@ def validate_inputs(element, input_arg):
     if isinstance(input, int):
         raise ValueError(
             f"Incorrect Detail {element}.\nTry making {input_arg} a String")
-    return element    
+    return element
+
 
 parse = reqparse.RequestParser()
 parse.add_argument('name', type=validate_inputs, required=True,
@@ -56,12 +56,29 @@ parse.add_argument('password', type=validate_inputs,
                    )
 
 
-
 class UserRegister(Resource):
     def post(self):
         elements = parse.parse_args()
+        present = [usr for usr in record_instance.user_records
+                   if usr['email'] == elements['email']]
 
-        return elements
+        try:
+            if not present:
+                new_user = Users(
+                    name=elements['name'],
+                    email=elements['email'],
+                    username=elements['username'],
+                    password=elements['password']
+                )
+                u = elements['username']
+                record_instance.post_record(new_user)
+                return f'{u} created', 201
+
+            else:
+                abort(409, message="It's bad manners to register twice")
+
+        except:
+            return "Oops! Something wrong happened", 500
 
 
 class UserGiveAccess(Resource):

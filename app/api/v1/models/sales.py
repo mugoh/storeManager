@@ -11,4 +11,4 @@ class Sales:
         self.quantity = quantity
         self.date = date
         self.transaction_type = transaction_type
-        self.sale_record = 0
+        self.id = 0
