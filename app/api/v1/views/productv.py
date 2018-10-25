@@ -97,11 +97,43 @@ class ProductList(Resource):
 
         return new_product, 201
 
+    def put(self, id):
+        self.parse = reqparse.RequestParser()
+        self.parse.add_argument('title', type=validate_inputs,
+                                location='json'
+                                )
+
+        self.parse.add_argument('category', type=validate_inputs,
+                                location='json'
+                                )
+
+        self.parse.add_argument('price', type=int,
+                                location='json'
+                                )
+
+        self.parse.add_argument('in_stock', type=int,
+                                location='json'
+                                )
+
+        elements = self.parse.parse_args()
+
+        if id not in record_instance.product_records:
+            reply = f'Product {product_id} unknown. Maybe create it?'
+
+            abort(404, message=reply)
+        for key, value in list(elements.items()):
+            if value:
+                record_instance.product_records[id].key = value
+
+        return {
+            'Effect': 'Success'
+        }, 201
+
 
 def validate_inputs(element, input_arg):
     if not element:
         raise ValueError(
-            f"Oops! {input_arg} is empty.\nPlease enter be a String")
+            f"Oops! {input_arg} is empty.\nPlease enter a String")
     if isinstance(input, int):
         raise ValueError(
             f"Incorrect Detail {element}.\nTry making {input_arg} a String")
