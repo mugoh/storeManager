@@ -11,7 +11,15 @@ api.add_resource(productv.ProductAPI, '/products/<int:id>')
 api.add_resource(salesv.SaleAPI, '/sales/<int:id>')
 api.add_resource(salesv.SalesList, '/sales')
 api.add_resource(userv.UsersList, '/users')
-api.add_resource(userv.UserAPI, '/users/<int:id>')
+# api.add_resource(userv.UserAPI, '/users/<int:id>')
+api.add_resource(userv.UserRegister, '/users/register')
+api.add_resource(userv.UserGiveAccess, '/users/access')
+api.add_resource(userv.UserLogout, '/users/logout/access')
+api.add_resource(userv.UserLogoutAnew, '/users/logout/refresh')
+api.add_resource(userv.RefreshSession, '/users/token/refresh')
+
+
+
 
 
 app.register_blueprint(v1)

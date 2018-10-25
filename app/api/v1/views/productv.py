@@ -98,10 +98,11 @@ class ProductList(Resource):
         }, 201
 
 
-def validate_inputs(input_arg, element):
+def validate_inputs(element, input_arg):
     if not element:
         raise ValueError(
             f"Oops! {input_arg} is empty.\nPlease enter be a String")
     if isinstance(input, int):
         raise ValueError(
             f"Incorrect Detail {element}.\nTry making {input_arg} a String")
+    return element

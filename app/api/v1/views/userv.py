@@ -22,6 +22,73 @@ class IntitalizeRecord:
 record_instance = IntitalizeRecord()
 
 
+
+def validate_inputs(element, input_arg):
+    if not element:
+        raise ValueError(
+            f"Oops! {input_arg} is empty.\nPlease enter be a String")
+    if isinstance(input, int):
+        raise ValueError(
+            f"Incorrect Detail {element}.\nTry making {input_arg} a String")
+    return element    
+
+parse = reqparse.RequestParser()
+parse.add_argument('name', type=validate_inputs, required=True,
+                   help="Please add a name"
+                   )
+
+parse.add_argument('username', type=validate_inputs,
+                   default='user' +
+                   str(random.randint(500, 5000)),
+                   location='json'
+                   )
+
+parse.add_argument('email', type=validate_inputs,
+                   required=True,
+                   help="You are not \
+                            allowed here without email",
+                        location='json'
+                   )
+
+parse.add_argument('password', type=validate_inputs,
+                   required=True,
+                   help='Please specify password'
+                   )
+
+
+
+class UserRegister(Resource):
+    def post(self):
+        elements = parse.parse_args()
+
+        return elements
+
+
+class UserGiveAccess(Resource):
+    def post(self):
+        elements = parse.parse_args()
+
+        return elements
+
+
+class UserLogout(Resource):
+    pass
+
+
+class UserLogoutAnew(Resource):
+    pass
+
+
+class RefreshSession(Resource):
+    pass
+
+
+class UsersList(Resource):
+    pass
+
+
+
+
 class UserAPI(Resource):
     @staticmethod
     def verify_existence(user_id):
@@ -90,10 +157,3 @@ class UsersList(Resource):
             abort(409, message="Email already registered")
 
 
-def validate_inputs(input_arg, element):
-    if not element:
-        raise ValueError(
-            f"Oops! {input_arg} is empty.\nPlease enter be a String")
-    if isinstance(input, int):
-        raise ValueError(
-            f"Incorrect Detail {element}.\nTry making {input_arg} a String")

@@ -105,10 +105,11 @@ class SalesList(Resource):
         return new_sale, 201
 
 
-def validate(detail, entry):
-    if not entry:
+def validate_inputs(element, input_arg):
+    if not element:
         raise ValueError(
-            f"Oops! {input} is empty.\nPlease enter be a String")
-    if isinstance(detail, int):
+            f"Oops! {input_arg} is empty.\nPlease enter be a String")
+    if isinstance(input, int):
         raise ValueError(
-            f"Incorrect Detail {element}.\n{detail} should be a String")
+            f"Incorrect Detail {element}.\nTry making {input_arg} a String")
+    return element
