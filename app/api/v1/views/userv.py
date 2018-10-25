@@ -61,12 +61,31 @@ parse.add_argument('password', type=validate_inputs,
 
 class UserRegister(Resource):
     def post(self):
+        email_form = re.compile(
+            r"(^[a-zA-Z0-9_.-]+@[a-zA-Z-]+\.[.a-zA-Z-]+$)"
+        )
+        username_form = re.compile(r"(^[A-Za-z0-9-]+$)")
+
         elements = parse.parse_args()
+
+        if len(elements['password']) < 6:
+            abort(400,
+                  message="Password too short. Make it at least 6\
+            characters")
+
+        if not re.match(email_form, elements['email']):
+            abort(400, message="Email format not invented yet.\
+            Try something like evil.cow@mammals.milk")
+
+        if not re.match(username_form, elements['username']):
+            abort(400, message="Try making \
+                the username with just numbers and letters")
+
         found_users = [usr for usr in record_instance.user_records.values()]
         present = [usr for usr in found_users
                    if usr.email == elements['email']]
 
-        #try:
+        # try:
         if not present:
             new_user = Users(
                 name=elements['name'],
@@ -81,7 +100,7 @@ class UserRegister(Resource):
         else:
             abort(409, message="It's bad manners to register twice")
 
-        #except:
+        # except:
         #    return "Oops! Something wrong happened", 500
 
 
@@ -128,16 +147,16 @@ class UserGiveAccess(Resource):
 class UserLogout(Resource):
     @jwt_required
     def post(self):
-        raw_jt = get_raw_jwt()['jt']
+        raw_jt = get_raw_jwt()['jti']
 
         try:
-            revoked = RevokeToken(jti=jti)
+            revoked = RevokeToken(jti=raw_jt)
             revoked.add()
 
             return "Session revoked"
-
-        except:
-            abort(500)
+        except Exception as er:
+            print(er)
+            abort(500, message='Oops! Something bad happened')
 
 
 class UserLogoutAnew(Resource):
@@ -148,20 +167,14 @@ class UserLogoutAnew(Resource):
         try:
             revoked = RevokeToken(jti=jti)
             revoked.add()
-
             return "Session revoked"
-        except:
-            abort(500)
+        except Exception as er:
+            print(er)
+            abort(500, message='Oops! Something bad happened')
 
 
 class RefreshSession(Resource):
     pass
-
-
-class UsersList(Resource):
-    pass
-
-
 
 
 class UserAPI(Resource):
@@ -180,53 +193,7 @@ class UserAPI(Resource):
 
 class UsersList(Resource):
     def get(self):
-        all = [user for user
-               in record_instance.user_records.values()]
+        alll = [user for user
+                in record_instance.user_records.values()]
 
-        return all, 200
-
-    def post(self):
-        self.parse = reqparse.RequestParser()
-        self.parse.add_argument('name', type=validate_inputs, required=True,
-                                help="Please add a name",
-                                location='json'
-                                )
-
-        self.parse.add_argument('username', type=validate_inputs,
-                                default='user' +
-                                str(random.randint(500, 5000)),
-                                location='json'
-                                )
-
-        self.parse.add_argument('email', type=validate_inputs,
-                                required=True,
-                                help="You are not \
-                                    allowed here without email",
-                                location='json'
-                                )
-
-        self.parse.add_argument('password', type=validate_inputs,
-                                required=True,
-                                help='Please specify password',
-                                location='json'
-                                )
-        elements = self.parse.parse_args()
-
-        user = {
-            'name': elements['name'],
-            'username': elements['username'],
-            'email': elements['email'],
-            'password': elements['password'],
-            'user id': users[-1]['user id'] + 1
-        }
-
-        present = [usr for usr in record_instance.user_records
-                   if usr['email'] == elements['email']]
-
-        if not present:
-            record_instance.post_record(user)
-
-            return user, 201
-
-        else:
-            abort(409, message="Email already registered")
+        return alll, 200
