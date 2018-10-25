@@ -61,7 +61,7 @@ class SalesList(Resource):
     @marshal_with(sale_fields)
     def post(self):
         self.parse = reqparse.RequestParser()
-        self.parse.add_argument('attendant', type=str,
+        self.parse.add_argument('attendant', type=validate,
                                 required=True,
                                 help="A sale need's an attendant",
                                 location='json')
@@ -103,3 +103,12 @@ class SalesList(Resource):
         sale_instance.post_record(new_sale)
 
         return new_sale, 201
+
+
+def validate(detail, entry):
+    if not entry:
+        raise ValueError(
+            f"Oops! {input} is empty.\nPlease enter be a String")
+    if isinstance(detail, int):
+        raise ValueError(
+            f"Incorrect Detail {element}.\n{detail} should be a String")

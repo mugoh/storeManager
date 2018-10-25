@@ -39,7 +39,7 @@ class ProductAPI(Resource):
         if product_id not in record_instance.product_records:
             reply = f'Product {product_id} unknown. Maybe create it?'
 
-            abort(404,message=reply)
+            abort(404, message=reply)
 
     @marshal_with(product_fields)
     def get(self, id):
@@ -59,12 +59,12 @@ class ProductList(Resource):
     @marshal_with(product_fields)
     def post(self):
         self.parse = reqparse.RequestParser()
-        self.parse.add_argument('title', type=str, required=True,
+        self.parse.add_argument('title', type=validate_inputs, required=True,
                                 help="Please add a title",
                                 location='json'
                                 )
 
-        self.parse.add_argument('category', type=str,
+        self.parse.add_argument('category', type=validate_inputs,
                                 default='None',
                                 location='json'
                                 )
@@ -96,3 +96,12 @@ class ProductList(Resource):
         return {
             'product': product
         }, 201
+
+
+def validate_inputs(input_arg, element):
+    if not element:
+        raise ValueError(
+            f"Oops! {input_arg} is empty.\nPlease enter be a String")
+    if isinstance(input, int):
+        raise ValueError(
+            f"Incorrect Detail {element}.\nTry making {input_arg} a String")
