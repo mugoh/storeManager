@@ -9,10 +9,10 @@ class InitializeRecord:
     def __init__(self):
         self.sale_records = {}
 
-    def post_record(self, sale_item):
+    def post_record(self, sale_):
         InitializeRecord.record += 1
-        sale_item.id = InitializeRecord.record
-        self.sale_records[InitializeRecord.record] = sale_item
+        sale_.id = InitializeRecord.record
+        self.sale_records[InitializeRecord.record] = sale_
 
     def fetch_record(self, id):
 
@@ -25,6 +25,7 @@ sale_instance = InitializeRecord()
 
 sale_fields = {
     'attendant': fields.String,
+    'sale_record': fields.Integer,
     'customer_name': fields.Integer,
     'product': fields.String,
     'quantity': fields.Integer,
@@ -36,17 +37,17 @@ sale_fields = {
 
 class SaleAPI(Resource):
     @staticmethod
-    def verify_existence(sale_record):
-        if sale_record not in sale_instance.sale_records:
-            error_msg = f'Sale {sale_record} unknown. Maybe create it?'
+    def verify_existence(sale_id):
+        if sale_id not in sale_instance.sale_records:
+            error_msg = f'Sale {sale_id} unknown. Maybe create it?'
 
             abort(404, message=error_msg)
 
     @marshal_with(sale_fields)
-    def get(self, sale_record):
-        self.verify_existence(sale_record)
+    def get(self, id):
+        self.verify_existence(id)
 
-        return sale_instance.fetch_record(sale_record)
+        return sale_instance.fetch_record(id)
 
 
 class SalesList(Resource):
@@ -102,5 +103,3 @@ class SalesList(Resource):
         sale_instance.post_record(new_sale)
 
         return new_sale, 201
-
-
