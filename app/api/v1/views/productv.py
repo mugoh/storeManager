@@ -1,6 +1,7 @@
 from flask_restful import Resource, reqparse, abort, fields, marshal_with
 import datetime
 from app.api.v1.models.products import Products
+from flask_jwt_extended import jwt_required
 
 
 class InitializeRecord:
@@ -56,6 +57,7 @@ class ProductList(Resource):
 
         return all
 
+    @jwt_required
     @marshal_with(product_fields)
     def post(self):
         self.parse = reqparse.RequestParser()

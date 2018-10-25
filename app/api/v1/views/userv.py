@@ -1,6 +1,9 @@
 from flask_restful import Resource, reqparse, abort
-from app.api.v1.models.users import Users
+from app.api.v1.models.users import Users, RevokeToken
 import random
+from passlib.hash import pbkdf2_sha256 as hash_pass
+from flask_jwt_extended import (jwt_required, create_access_token,
+                                get_raw_jwt, jwt_refresh_token_required)
 
 
 class IntitalizeRecord:
@@ -59,41 +62,96 @@ parse.add_argument('password', type=validate_inputs,
 class UserRegister(Resource):
     def post(self):
         elements = parse.parse_args()
-        present = [usr for usr in record_instance.user_records
-                   if usr['email'] == elements['email']]
+        found_users = [usr for usr in record_instance.user_records.values()]
+        present = [usr for usr in found_users
+                   if usr.email == elements['email']]
 
-        try:
-            if not present:
-                new_user = Users(
-                    name=elements['name'],
-                    email=elements['email'],
-                    username=elements['username'],
-                    password=elements['password']
-                )
-                u = elements['username']
-                record_instance.post_record(new_user)
-                return f'{u} created', 201
+        #try:
+        if not present:
+            new_user = Users(
+                name=elements['name'],
+                email=elements['email'],
+                username=elements['username'],
+                password=Users.hashpasses(elements['password'])
+            )
+            u = elements['username']
+            record_instance.post_record(new_user)
+            return f'{u} created', 201
 
-            else:
-                abort(409, message="It's bad manners to register twice")
+        else:
+            abort(409, message="It's bad manners to register twice")
 
-        except:
-            return "Oops! Something wrong happened", 500
+        #except:
+        #    return "Oops! Something wrong happened", 500
+
+
+class UserVerify:
+    f_users = [usr for usr in record_instance.user_records.values()]
+
+    def find_by_email(self, email):
+            known_users = [usr for usr in f_users
+                           if usr.email == email]
+
+            return known_users[0]
+
+    def verify_pass(self, password, email):
+        known = [usr for usr in f_users
+                 if usr.email == email]
+
+        if not known:
+            return False
+
+        return hash_pass.verify(password, known['password'])
 
 
 class UserGiveAccess(Resource):
     def post(self):
         elements = parse.parse_args()
+        password = elements.get('password').strip()
+        email = elements.get('email').strip()
 
-        return elements
+        user = UserVerify.find_by_email(email)
+        if not user:
+            abort(401, message=f'{email} not known')
+
+        if UserVerify.verify_pass(password, email):
+
+            token = create_access_token(identity=user['name'])
+            refresh_token = create_refresh_token(identity=user['name'])
+
+            return "Login successful", 200
+
+        else:
+            abort(400, message="Oops, that didn't work. Try again?")
 
 
 class UserLogout(Resource):
-    pass
+    @jwt_required
+    def post(self):
+        raw_jt = get_raw_jwt()['jt']
+
+        try:
+            revoked = RevokeToken(jti=jti)
+            revoked.add()
+
+            return "Session revoked"
+
+        except:
+            abort(500)
 
 
 class UserLogoutAnew(Resource):
-    pass
+    @jwt_refresh_token_required
+    def post(self):
+        raw_jt = get_raw_jwt()['jt']
+
+        try:
+            revoked = RevokeToken(jti=jti)
+            revoked.add()
+
+            return "Session revoked"
+        except:
+            abort(500)
 
 
 class RefreshSession(Resource):
@@ -125,7 +183,7 @@ class UsersList(Resource):
         all = [user for user
                in record_instance.user_records.values()]
 
-        return all
+        return all, 200
 
     def post(self):
         self.parse = reqparse.RequestParser()
@@ -172,5 +230,3 @@ class UsersList(Resource):
 
         else:
             abort(409, message="Email already registered")
-
-

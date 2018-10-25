@@ -1,6 +1,7 @@
 from flask_restful import Resource, reqparse, abort, fields, marshal_with
 import datetime
 from app.api.v1.models.sales import Sales
+from flask_jwt_extended import jwt_required
 
 
 class InitializeRecord:
@@ -43,6 +44,7 @@ class SaleAPI(Resource):
 
             abort(404, message=error_msg)
 
+    @jwt_required
     @marshal_with(sale_fields)
     def get(self, id):
         self.verify_existence(id)
@@ -51,6 +53,7 @@ class SaleAPI(Resource):
 
 
 class SalesList(Resource):
+    @jwt_required
     @marshal_with(sale_fields)
     def get(self):
         all = [sale for sale
@@ -58,6 +61,7 @@ class SalesList(Resource):
 
         return all
 
+    @jwt_required
     @marshal_with(sale_fields)
     def post(self):
         self.parse = reqparse.RequestParser()

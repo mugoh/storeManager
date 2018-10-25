@@ -16,10 +16,6 @@ api.add_resource(userv.UserRegister, '/users/register')
 api.add_resource(userv.UserGiveAccess, '/users/access')
 api.add_resource(userv.UserLogout, '/users/logout/access')
 api.add_resource(userv.UserLogoutAnew, '/users/logout/refresh')
-api.add_resource(userv.RefreshSession, '/users/token/refresh')
-
-
-
 
 
 app.register_blueprint(v1)
