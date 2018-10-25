@@ -67,11 +67,11 @@ class SalesList(Resource):
                                 location='json')
 
         # Customer details
-        self.parse.add_argument('customer_name', type=str,
+        self.parse.add_argument('customer_name', type=validate,
                                 default='Anonymous',
                                 location='json')
 
-        self.parse.add_argument('product', type=str,
+        self.parse.add_argument('product', type=validate,
                                 required=True,
                                 help="A product to sell sure has a name",
                                 location='json')
@@ -80,7 +80,7 @@ class SalesList(Resource):
                                 help="How many items", default=1,
                                 location='json')
 
-        self.parse.add_argument('transaction_type', type=str,
+        self.parse.add_argument('transaction_type', type=validate,
                                 default='Cash on Delivery',
                                 location='json')
 
