@@ -3,7 +3,9 @@ from app.api.v1.models.users import Users, RevokeToken
 import random
 from passlib.hash import pbkdf2_sha256 as hash_pass
 from flask_jwt_extended import (jwt_required, create_access_token,
-                                get_raw_jwt, jwt_refresh_token_required)
+                                get_raw_jwt, jwt_refresh_token_required,
+                                create_refresh_token)
+import re
 
 
 class IntitalizeRecord:
@@ -28,7 +30,7 @@ record_instance = IntitalizeRecord()
 def validate_inputs(element, input_arg):
     if not element:
         raise ValueError(
-            f"Oops! {input_arg} is empty.\nPlease enter be a String")
+            f"Oops! {input_arg} is empty.\nPlease enter a String")
     if isinstance(input, int):
         raise ValueError(
             f"Incorrect Detail {element}.\nTry making {input_arg} a String")
@@ -105,22 +107,26 @@ class UserRegister(Resource):
 
 
 class UserVerify:
-    f_users = [usr for usr in record_instance.user_records.values()]
 
-    def find_by_email(self, email):
-            known_users = [usr for usr in f_users
-                           if usr.email == email]
+    def find_by_email(self, elements):
+        found_users = [usr for usr in record_instance.user_records.values()]
+        present = [usr for usr in UserVerify.f_users
+                   if usr.email == elements['email']]
 
-            return known_users[0]
+        return present
 
-    def verify_pass(self, password, email):
-        known = [usr for usr in f_users
-                 if usr.email == email]
+    def verify_pass(self, password, elements):
+        found_users = [usr for usr in record_instance.user_records.values()]
+        known = [usr for usr in found_users
+                 if usr.email == elements['email']]
 
         if not known:
             return False
 
-        return hash_pass.verify(password, known['password'])
+        return hash_pass.verify(password, known[0].password)
+
+
+userv = UserVerify()
 
 
 class UserGiveAccess(Resource):
@@ -129,16 +135,19 @@ class UserGiveAccess(Resource):
         password = elements.get('password').strip()
         email = elements.get('email').strip()
 
-        user = UserVerify.find_by_email(email)
+        user = userv.find_by_email(elements)
         if not user:
-            abort(401, message=f'{email} not known')
+            abort(401, message=f'{email} not known. Maybe register?')
 
-        if UserVerify.verify_pass(password, email):
+        if userv.verify_pass(password, elements):
+            user = user[0]
+            token = create_access_token(identity=user.name)
+            refresh_token = create_refresh_token(identity=user.name)
 
-            token = create_access_token(identity=user['name'])
-            refresh_token = create_refresh_token(identity=user['name'])
-
-            return "Login successful", 200
+            return {
+                "Status": "Login successful",
+                "Access Token": token
+            }, 200
 
         else:
             abort(400, message="Oops, that didn't work. Try again?")
