@@ -1,25 +1,22 @@
 import unittest
-from app import app
-import mock
-from base64 import b64encode
+from run import create_app
 import json
 import sys
 from random import randint
 
-my_app = app.my_app
+my_app = create_app()
 
 
 class BasicProductTests(unittest.TestCase):
     def setUp(self):
         my_app.testing = True
         self.app = my_app.test_client()
-        self.path = '/stman/api/v1.0/products'
-        self.headers = {            # User credentials to test
-            'Authorization': 'Basic %s' % b64encode(
-                b"manager:man").decode("ascii")
+        self.path = '/api/v1.0/products'
+        self.single_path = '/api/v1.0/products' + '/' + '1'
+        self.headers = {
+            'Authorization': 'Bearer ' + self.give_access()
 
         }
-        self.single_path = '/stman/api/v1.0/products' + '/' + '1'
 
         self.response_get = self.app.get(self.path,
                                          follow_redirects=True
@@ -38,59 +35,81 @@ class BasicProductTests(unittest.TestCase):
             self.response_get.get_data().decode(sys.getdefaultencoding())
         )
 
+    def give_access(self):
+        # Register test user
+        self.app.post('api/v1.0/users/register',
+                      data=json.dumps(dict(
+                          email='evil.cow@c.dairy',
+                          password='pa55word',
+                          name="Evil Cow")),
+                      content_type='application/json',
+                      follow_redirects=True
+
+                      )
+        # Login test user
+        resp = self.app.post('api/v1.0/users/access',
+                             data=json.dumps(dict(
+                                 email='evil.cow@c.dairy',
+                                 password='pa55word',
+                                 name="Evil Cow")),
+                             content_type='application/json',
+                             follow_redirects=True
+
+                             )
+        response = json.loads(
+            resp.get_data().decode(sys.getdefaultencoding())
+        )
+        return response['Access Token']
+
     def test_access_without_credentials(self):
         """
-        Credentials not required not view products
+        Credentials not required to view products
         """
         self.assertNotEqual(self.response_get.status_code, 403,
                             "Failed to show \
                             products without requesting for credentials")
 
+    def test_pass_credentials_for_fun(self):
+        """
+        Passing credentials unnecessary to view products
+        """
         self.assertNotEqual(self.response_get_auth.status_code, 403,
                             "Failed to show \
                             products without requesting for credentials")
 
     def test_get_products(self):
-        # check data request comes in a dictionary
+        # check data request comes in a list
 
         response_unpack = json.loads(
             self.response_get.get_data().decode(sys.getdefaultencoding())
         )
 
-        self.assertTrue(isinstance(response_unpack, dict),
-                        msg="Failed to output Records in a dictionary")
+        self.assertTrue(isinstance(response_unpack, list),
+                        msg="Failed to output Records in a list")
 
     def test_get_products_contents(self):
         """
-        Product records are lists wrapped in dicts
+        Product records starts empty
         """
-        self.assertIsInstance(self.response_unpack_get['product'], list,
-                              msg="Failed to give record as a list of products"
-                              )
-
-    def test_fielding_of_ouputs(self):
-        # Check if fields give back data as nested output
-
-        self.assertFalse(app.products is self.response_unpack_get['product'],
-                         msg="Failed to group Product record details"
-                         )
+        self.assertRaises(IndexError, lambda: self.response_unpack_get[10],
+                          ), "Failes to initialize product record as empty"
 
     def test_access_to_post_products(self):
         """
-        Verify that only allowed users(manager) can create product.
+        Verify that only only registered user can create product.
         """
 
         response_post_product = self.app.post(self.path,
                                               follow_redirects=True
                                               )
-        self.assertTrue(response_post_product.status_code == 403,
+        self.assertTrue(response_post_product.status_code == 401,
                         msg="Fails to deny\
                         anuthorized user access to create new item")
 
     def test_post_product(self):
         """
         Verify that necessary arguments are passed for
-        needed for product to be created.
+        for product to be created.
         """
 
         response_post_product = self.app.post(self.path,
@@ -113,46 +132,78 @@ class BasicProductTests(unittest.TestCase):
                       msg="Fails to request \
                              user for required arguments")
 
-    def test_make_sensible_post_for_product(self):
+    def test_post_product_invalid_name(self):
         """
-        Verify that a new product can be created.
+        Verify that necessary arguments are passed for
+        for product to be created.
         """
 
-        response_post_sale = self.app.post(self.path,
-                                           headers=self.headers,
-                                           data=json.dumps(dict(
-                                               title='Loose a Screw',
-                                               price=7854,
-                                               category="Vodkaless Alcohol")),
-                                           content_type='application/json',
-                                           follow_redirects=True
-                                           )
+        response_post_product = self.app.post(self.path,
+                                              headers=self.headers,
+                                              data=json.dumps(dict(
+                                                  price='Call her A',
+                                                  title='Almost Ours',
+                                                  category="I'm taking her\
+                                                  to coffee")),
+                                              content_type='application/json',
+                                              follow_redirects=True
+                                              )
+        response_unpack = json.loads(
+            response_post_product.get_data().decode(sys.getdefaultencoding())
+        )
+        print(response_unpack)
 
-        self.assertTrue(response_post_sale.status_code is 201,
-                        msg="Fails to create new product")
+        self.assertEqual(400, response_post_product.status_code,
+                         msg="Fails to restrict\
+                      user to give attendant name to letters")
+
+    def test_post_product_invalid_(self):
+        """
+        Verify that necessary arguments are passed for
+        for product to be created.
+        """
+
+        response_post_product = self.app.post(self.path,
+                                              headers=self.headers,
+                                              data=json.dumps(dict(
+                                                  price='Call her A',
+                                                  product=54,
+                                                  category="I'm taking her\
+                                                  to coffee")),
+                                              content_type='application/json',
+                                              follow_redirects=True
+                                              )
+        response_unpack = json.loads(
+            response_post_product.get_data().decode(sys.getdefaultencoding())
+        )
+        print(response_unpack)
+
+        self.assertEqual(400, response_post_product.status_code,
+                         msg="Fails to restrict\
+                      user to give attendant name to letters")
 
     def test_post_product_using_unknown_details(self):
         """
         Verify that unknown data arguments do not create new details
-        for the new sale.
+        for the new product.
         """
 
-        response_post_sale = self.app.post(self.path,
-                                           headers=self.headers,
-                                           data=json.dumps(dict(
-                                               I_='Somebody I know',
-                                               got=354,
-                                               drunk='Baby Soap',
-                                               a_little='absent')),
-                                           content_type='application/json',
-                                           follow_redirects=True
-                                           )
+        response_post_product = self.app.post(self.path,
+                                              headers=self.headers,
+                                              data=json.dumps(dict(
+                                                  I_='Somebody I know',
+                                                  got=354,
+                                                  drunk='Baby Soap',
+                                                  a_little='absent')),
+                                              content_type='application/json',
+                                              follow_redirects=True
+                                              )
         response_unpack = json.loads(
-            response_post_sale.get_data().decode(sys.getdefaultencoding())
+            response_post_product.get_data().decode(sys.getdefaultencoding())
         )
 
         self.assertRaises(KeyError, lambda: response_unpack[
-            'sale']['drunk']),
+            0]['drunk']),
         "Fails to ignore unknown product details"
 
     def test_post_product_really_creates_product(self):
@@ -161,34 +212,39 @@ class BasicProductTests(unittest.TestCase):
         This uri should be added to those of existing products.
         """
 
-        response_post_sale = self.app.post(self.path,
-                                           headers=self.headers,
-                                           data=json.dumps(dict(
-                                               title='Call me A',
-                                               price=354,
-                                               category='Bubbless Soap')),
-                                           content_type='application/json',
-                                           follow_redirects=True
-                                           )
+        response_post_product = self.app.post(self.path,
+                                              headers=self.headers,
+                                              data=json.dumps(dict(
+                                                  title='Call me A',
+                                                  price=354,
+                                                  category='Bubbless Soap')),
+                                              content_type='application/json',
+                                              follow_redirects=True
+                                              )
         response_unpack_post = json.loads(
-            response_post_sale.get_data().decode(sys.getdefaultencoding())
-        )
-
-        # Request we get from fetch-all-products
-        response_unpack_get = json.loads(
-            self.response_get.get_data().decode(sys.getdefaultencoding())
+            response_post_product.get_data().decode(sys.getdefaultencoding())
         )
 
         # Uri we created for this product
-        product_uri = int(response_unpack_post['product']['url'][-1])
+        product_uri = (response_unpack_post['id'])
+
+        # Fetch all records
+        response_get = self.app.get(self.path,
+                                    follow_redirects=True
+                                    )
+
+        # Request we get from fetch-all-products
+        response_unpack_get = json.loads(
+            response_get.get_data().decode(sys.getdefaultencoding())
+        )
 
         # Uri we had last
-        last_product_known = int(
+        last_product_known = (
             response_unpack_get[
-                'product'][-1]['url'][-1]) + 1
+                -1]['id'])
 
         self.assertEqual(product_uri, last_product_known,
-                         msg="Fails to add new sale to existing sales")
+                         msg="Fails to add new product to existing products")
 
     def test_put_for_Products(self):
         """
@@ -196,17 +252,18 @@ class BasicProductTests(unittest.TestCase):
         data to the Proucts resource.
         'Put' should fail.
         """
+
         what_we_expect = "The method is not allowed for the requested URL."
-        resput_sales = self.app.put(self.path,
-                                    headers=self.headers,
-                                    data=json.dumps(dict(
-                                        this=1,
-                                        thing=2,
-                                        fails=3)),
-                                    follow_redirects=True
-                                    )
+        resput_products = self.app.put(self.path,
+                                       headers=self.headers,
+                                       data=json.dumps(dict(
+                                           this=1,
+                                           thing=2,
+                                           fails=3)),
+                                       follow_redirects=True
+                                       )
         response_unpack = json.loads(
-            resput_sales.get_data().
+            resput_products.get_data().
             decode(sys.getdefaultencoding())
         )
 
@@ -232,52 +289,24 @@ class BasicSingleProductTests(BasicProductTests):
         """
         Check that the Product url element is added from the path
         leading to the product.
+        We expect the url number to have increased
         """
 
+        response_post_product = self.app.post(self.path,
+                                              headers=self.headers,
+                                              data=json.dumps(dict(
+                                                  title='Call me A',
+                                                  price=354,
+                                                  category='Bubbless Soap')),
+                                              content_type='application/json',
+                                              follow_redirects=True
+                                              )
         response_unpack = json.loads(
-            self.response_get_product.get_data().
-            decode(sys.getdefaultencoding())
+            response_post_product.get_data().decode(sys.getdefaultencoding())
         )
 
-        self.assertEqual(response_unpack['product']['url'],
-                         self.single_path)
-
-    def test_delete_for_missing_resource(self):
-        guessed_path = self.path + '/' + str(randint(2345, 998888))
-        response = self.app.get(guessed_path,
-                                headers=self.headers,
-                                follow_redirects=True
-                                )
-
-        self.assertFalse(response.status_code == 200,
-                         msg="Deletes a nonexistent sale"
-                         )
-
-    def test_delete_product(self):
-
-        # Try not remove 'path/../../1', I think every test around wants her
-        rm_path = self.path + '/' + '2'
-        resdel_prod = self.app.delete(rm_path,
-                                      headers=self.headers,
-                                      follow_redirects=True
-                                      )
-        response_unpack = json.loads(
-            resdel_prod.get_data().
-            decode(sys.getdefaultencoding())
-        )
-        resdel_prod = self.app.get(rm_path,
-                                   headers=self.headers,
-                                   follow_redirects=True
-                                   )
-        # Assert delete
-        self.assertDictEqual(response_unpack, {"Status": True},
-                             msg="Failed to delete sale"
-                             )
-
-        # Assert sale is discarded
-        self.assertNotEqual(resdel_prod.status_code, 404,
-                            msg="Failed to remove deleted item from records"
-                            )
+        self.assertGreaterEqual(response_unpack['id'],
+                                int(self.single_path[-1]))
 
     def test_get_product_ouput(self):
         # Product is received wrapped in dict
@@ -302,12 +331,10 @@ class BasicSingleProductTests(BasicProductTests):
                                           content_type='application/json',
                                           follow_redirects=True
                                           )
-        success = 200
-        """ response_unpack = json.loads(
-            resput_single_sale.get_data().
-            decode(sys.getdefaultencoding())
-        ) """
-        self.assertEqual(resput_single_prod.status_code, success)
+        created = 201
+
+        self.assertEqual(resput_single_prod.status_code, created,
+                         msg="Fails to edit a product")
 
     def test_put_product_using_bad_url(self):
         """
@@ -323,4 +350,5 @@ class BasicSingleProductTests(BasicProductTests):
                                           follow_redirects=True
                                           )
         missing = 404
-        self.assertEqual(resput_single_prod.status_code, missing)
+        self.assertEqual(resput_single_prod.status_code, missing,
+                         msg="Failes. Edits a nonexistent product")

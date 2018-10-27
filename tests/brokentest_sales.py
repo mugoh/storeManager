@@ -1,13 +1,13 @@
 
 import unittest
-from app import app
+from run import create_app
 import mock
 from base64 import b64encode
 import json
 import sys
 from random import randint
 
-my_app = app.my_app
+my_app = create_app()
 
 
 class BasicSaleTests(unittest.TestCase):

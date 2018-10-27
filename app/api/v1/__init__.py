@@ -5,7 +5,7 @@ from app.api.v1.views import productv, salesv, userv
 
 
 def create_app():
-    jwt = JWTManager()
+    jwt=JWTManager()
 
     app = Flask(__name__)
     app.config['JWT_SECRET_KEY'] = 'secrte.secrete'
@@ -18,11 +18,13 @@ def create_app():
     api.add_resource(salesv.SaleAPI, '/sales/<int:id>')
     api.add_resource(salesv.SalesList, '/sales')
     api.add_resource(userv.UsersList, '/users')
+    api.add_resource(userv.UserAPI, '/users/<int:id>')
     # api.add_resource(userv.UserAPI, '/users/<int:id>')
     api.add_resource(userv.UserRegister, '/users/register')
     api.add_resource(userv.UserGiveAccess, '/users/access')
-    api.add_resource(userv.UserLogout, '/users/logout/access')
-    api.add_resource(userv.UserLogoutAnew, '/users/logout/refresh')
+    #api.add_resource(userv.UserLogout, '/users/logout/access')
+    #api.add_resource(userv.UserLogoutAnew, '/users/logout/refresh')
+
 
     app.register_blueprint(v1)
 

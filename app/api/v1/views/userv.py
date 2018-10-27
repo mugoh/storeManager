@@ -107,10 +107,11 @@ class UserRegister(Resource):
 
 
 class UserVerify:
+    f_users = [usr for usr in record_instance.user_records.values()]
 
     def find_by_email(self, elements):
         found_users = [usr for usr in record_instance.user_records.values()]
-        present = [usr for usr in UserVerify.f_users
+        present = [usr for usr in found_users
                    if usr.email == elements['email']]
 
         return present
@@ -156,7 +157,7 @@ class UserGiveAccess(Resource):
 class UserLogout(Resource):
     @jwt_required
     def post(self):
-        raw_jt = get_raw_jwt()['jti']
+        """raw_jt = get_raw_jwt()['jti']
 
         try:
             revoked = RevokeToken(jti=raw_jt)
@@ -166,12 +167,12 @@ class UserLogout(Resource):
         except Exception as er:
             print(er)
             abort(500, message='Oops! Something bad happened')
-
+    """
 
 class UserLogoutAnew(Resource):
     @jwt_refresh_token_required
     def post(self):
-        raw_jt = get_raw_jwt()['jt']
+       """ raw_jt = get_raw_jwt()['jt']
 
         try:
             revoked = RevokeToken(jti=jti)
@@ -181,7 +182,7 @@ class UserLogoutAnew(Resource):
             print(er)
             abort(500, message='Oops! Something bad happened')
 
-
+        """
 class RefreshSession(Resource):
     pass
 
@@ -202,7 +203,11 @@ class UserAPI(Resource):
 
 class UsersList(Resource):
     def get(self):
-        alll = [user for user
-                in record_instance.user_records.values()]
+        try:
+            alll = [user for user
+                    in record_instance.user_records.values()]
 
-        return alll, 200
+            return alll, 200
+        except Exception as er:
+            print(er)
+            abort(500, message="Oops, something bad ha")
