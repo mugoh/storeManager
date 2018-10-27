@@ -12,5 +12,19 @@ A web application to help store managers maintain their inventories and manage s
 
 Try on Heroku: https://store-man90.herokuapp.com/stman/api/v1.0/products
 
+/stman/api/v1.0/sales
+GET sales 
+POST sale
+ 
+/stman/api/v1.0/sales/<int:sales_record>
+GET sale
+PUT sale
+DELETE sale
+
+/stman/api/v1.0/products
+GET products, POST product
+
+stman/api/v1.0/products/id
+GET product, PUT, DELETE
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
