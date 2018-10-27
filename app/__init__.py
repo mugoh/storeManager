@@ -1,11 +1,11 @@
-import os
 from flask import Flask
+#from api.v1 import v1
 
-my_app = Flask(__name__)
-#my_app.config.from_object(os.environ['APP_SETTINGS'])
 
-my_app_settings = os.getenv(
-    'APP_SETTINGS',
-    'app.config.DevelopmentConfig'
-)
-my_app.config.from_object(my_app_settings)
+#def create_app(config_setting):
+app = Flask(__name__)
+#app.config.from_object(config_setting)
+
+#app.register_blueprint(v1)
+
+#    return app
