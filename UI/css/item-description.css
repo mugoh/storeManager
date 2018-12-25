@@ -40,6 +40,20 @@ a.edit-for-admin:hover {
 	color: #FF6347;
 }
 
+<<<<<<< HEAD
+=======
+a.edit-for-attendant {
+	cursor: not-allowed;
+	color: #FF8C00;
+	font-weight: bolder;
+	font-size: 17px;
+}
+
+a.edit-for-attendant:hover {
+	cursor: not-allowed;
+}
+
+>>>>>>> a004e09e15b5bd8b49b0ed8ee401146d8fcc3ef9
 .product-des-card:hover {
     box-shadow: 0 16px 43px 0 rgba(10,60,252,0.2);
 }
