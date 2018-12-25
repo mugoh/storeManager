@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Store Manager Sign in</title>
+	<meta charset="UTF-8">
+	<meta name="descripiton" content="Store Manager">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="styleshete" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+	<link rel="stylesheet" type="text/css" href="css/sign-forms.css">
+	<link rel="stylesheet" type="text/css" href="css/styles.css">
+
+</head>
+<body>
+	
+	<header id="sign-in-header">
+		
+		<div class="container-sld">
+			<div class="navbar-head">
+				<a href="index.html" class="store-logo"><img src="images/store-logo" alt="Store Logo" width="150" /></a>
+			</div>
+		<div class="nav-sign-in">
+			<ul>
+				<li><a href="#sign-up.html">Don't have an account?</a></li>
+				<li><a class="sign-up-for-new" href="sign-up.html">sign up</a></li>
+			</ul>
+		</div>	
+
+
+	</header><!-- /header -->
+
+
+<div id="container">       
+	<form>
+		<label for="username">Username or email:</label>
+<<<<<<< HEAD
+		<input type="text" id="username" name="username" minlength="5" required="required">
+		<label for="password">Password:</label>
+		<input type="password" id="pass" name="password" minlength="6" maxlength="12" required="required">
+		<div id="bottom">
+			<input type="checkbox"><label class="check"for="checkbox">Keep me signed in</label><br/>
+			<input class="sign-button" type="submit" value="Sign in">
+			<a class="bottom-right" href="#default">Forgot password</a>
+=======
+		<input type="text" id="username" name="username" minlength="5" required="required" title="Name should have at least 5 letters">
+		<label for="password">Password:</label>
+		<input type="password" id="pass" name="password" required="required" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" title="Password must contain at least one digit, one uppercase, one lowercase letter, and at least 6 characters">
+		<div id="bottom">
+			<input type="checkbox"><label class="check"for="checkbox">Keep me signed in</label><br/>
+			<input class="sign-button" type="submit" value="Sign in">
+			<a class="bottom-right" href="default.html">Forgot password</a>
+>>>>>>> a004e09e15b5bd8b49b0ed8ee401146d8fcc3ef9
+		</div>
+	</form>
+</div>
+
+</body>
+</html>

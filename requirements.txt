@@ -1,6 +1,9 @@
 aniso8601==3.0.2
+<<<<<<< HEAD
 atomicwrites==1.2.1
 attrs==18.2.0
+=======
+>>>>>>> master
 certifi==2018.10.15
 chardet==3.0.4
 Click==7.0
@@ -9,13 +12,18 @@ coveralls==1.5.1
 docopt==0.6.2
 Flask==1.0.2
 Flask-HTTPAuth==3.2.4
+<<<<<<< HEAD
 Flask-JWT-Extended==3.13.1
 Flask-RESTful==0.3.6
 gunicorn==19.9.0
+=======
+Flask-RESTful==0.3.6
+>>>>>>> master
 idna==2.7
 itsdangerous==0.24
 Jinja2==2.10
 MarkupSafe==1.0
+<<<<<<< HEAD
 mock==2.0.0
 more-itertools==4.3.0
 passlib==1.7.1
@@ -28,6 +36,9 @@ pytest-cov==2.6.0
 python-coveralls==2.9.1
 pytz==2018.5
 PyYAML==3.13
+=======
+pytz==2018.5
+>>>>>>> master
 requests==2.20.0
 six==1.11.0
 urllib3==1.24

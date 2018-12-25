@@ -8,7 +8,17 @@ install:
 
 script:
   - coverage run -m pytest
+<<<<<<< HEAD
   - py.test --cov=app/api/v1 -v
 
 after_success:
   - coveralls
+=======
+  - py.test --cov=project
+
+after_success:
+  - coveralls
+
+script:
+  - pytest
+>>>>>>> master
